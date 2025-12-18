@@ -128,7 +128,7 @@ const save = () => {
 .card-title h2 {
   margin: 0;
   font-size: 1.35rem;
-  color: #311243;
+  color: rgb(var(--v-theme-on-surface));
 }
 
 .card-body {

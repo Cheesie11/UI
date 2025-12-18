@@ -39,10 +39,10 @@ defineProps({
 .empty-state {
   margin: 0;
   padding: 1rem;
-  border: 1px dashed #d9b7ff;
-  border-radius: 8px;
-  color: #7442a8;
+  border: 1px dashed rgba(var(--v-theme-primary), 0.4);
+  border-radius: 10px;
+  color: rgba(var(--v-theme-on-background), 0.85);
   font-size: 0.9rem;
-  background-color: rgba(218, 182, 252, 0.08);
+  background-color: rgba(var(--v-theme-primary), 0.08);
 }
 </style>

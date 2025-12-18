@@ -2,6 +2,7 @@
   <div class="content">
     <NewSession @create-form="addForm" />
     <FormList :forms="forms" />
+    <DummyComponent/>
   </div>
 </template>
 
@@ -9,6 +10,7 @@
 import { ref } from "vue";
 import NewSession from "../components/NewSession.vue";
 import FormList from "../components/FormList.vue";
+import DummyComponent from "../components/DummyComponent.vue";
 
 const forms = ref([]);
 

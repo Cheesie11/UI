@@ -31,19 +31,20 @@ const handleSave = (payload) => {
 
 .form-box {
   padding: 1.5rem;
-  border-radius: 12px;
-background-color: rgba(218, 182, 252, 0.08);
+  border-radius: 16px;
+  background-color: rgba(var(--v-theme-surface), 0.95);
+  border: 1px solid rgba(var(--v-theme-primary), 0.18);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 8px 30px rgba(80, 30, 120, 0.08);
+  box-shadow: 0 18px 40px rgba(8, 10, 18, 0.4);
 }
 
 .eyebrow {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #8746c6;
+  color: rgba(var(--v-theme-primary), 0.75);
   margin: 0 0 0.25rem 0;
 }
 
@@ -51,6 +52,6 @@ background-color: rgba(218, 182, 252, 0.08);
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
-  color: #311243;
+  color: rgb(var(--v-theme-on-surface));
 }
 </style>

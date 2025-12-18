@@ -95,12 +95,14 @@ const handleSubmit = async () => {
   max-width: 420px;
   width: 100%;
   padding: 2.25rem 2rem;
-  background-color: rgba(218, 182, 252, 0.08);
-  border-radius: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background-color: rgba(var(--v-theme-surface), 0.9);
+  border-radius: 18px;
+  border: 1px solid rgba(var(--v-theme-primary), 0.25);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  box-shadow: 0 25px 60px rgba(6, 10, 19, 0.45);
+  backdrop-filter: blur(16px);
 }
 
 .login-card__header h1 {
@@ -111,7 +113,7 @@ const handleSubmit = async () => {
 .login-card__header p {
   margin-top: 0.4rem;
   font-size: 0.95rem;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(var(--v-theme-on-surface), 0.7);
 }
 
 .register-hint {
@@ -125,6 +127,6 @@ const handleSubmit = async () => {
 .register-hint a {
   color: rgb(var(--v-theme-primary));
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
 }
 </style>

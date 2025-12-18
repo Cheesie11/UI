@@ -69,10 +69,12 @@ const formattedDate = computed(() => {
 
 <style scoped>
 .form-tile {
-  border: 1px solid rgba(138, 70, 198, 0.25);
-  border-radius: 12px;
+  border: 1px solid rgba(var(--v-theme-primary), 0.25);
+  border-radius: 14px;
   padding: 1rem 1.25rem;
-  background-color: rgb(var(--v-theme-surface));
+  background-color: rgba(var(--v-theme-surface), 0.9);
+  box-shadow: 0 12px 25px rgba(4, 8, 16, 0.35);
+  backdrop-filter: blur(12px);
 }
 
 .header {
@@ -86,12 +88,12 @@ const formattedDate = computed(() => {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #311243;
+  color: rgb(var(--v-theme-on-surface));
 }
 
 .meta {
   font-size: 0.85rem;
-  color: #7e65a2;
+  color: rgba(var(--v-theme-on-surface), 0.7);
   margin: 0.2rem 0 0 0;
 }
 

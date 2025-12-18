@@ -5,7 +5,7 @@ import ThemeSwitcher from "./components/ThemeSwitcher.vue";
 
 <template>
   <v-app>
-    <v-app-bar elevation="0">
+    <v-app-bar elevation="0" color="background" flat>
       <v-app-bar-title>
         <RouterLink class="brand" to="/">CodeCriteria</RouterLink>
       </v-app-bar-title>
