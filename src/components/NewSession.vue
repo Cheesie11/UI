@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import CreateFormDialog from "./CreateFormDialog.vue";
+import CreateFormDialog from "./Dialog.vue";
 
 const emit = defineEmits(["create-form"]);
 

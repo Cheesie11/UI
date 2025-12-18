@@ -1,47 +1,3 @@
-<script setup>
-import { ref } from "vue";
-
-const emit = defineEmits(["save"]);
-
-const dialog = ref(false);
-
-const optionList = [
-  "Clarity of communication",
-  "Technical depth",
-  "Collaboration readiness",
-  "User impact",
-];
-
-const title = ref("");
-const selectedOptions = ref([]);
-const titleError = ref("");
-
-const reset = () => {
-  title.value = "";
-  selectedOptions.value = [];
-  titleError.value = "";
-};
-
-const close = () => {
-  dialog.value = false;
-  reset();
-};
-
-const save = () => {
-  if (!title.value.trim()) {
-    titleError.value = "Please enter a session title.";
-    return;
-  }
-
-  emit("save", {
-    title: title.value.trim(),
-    options: [...selectedOptions.value],
-  });
-
-  close();
-};
-</script>
-
 <template>
   <v-dialog v-model="dialog" max-width="520">
     <template #activator="{ props }">
@@ -57,7 +13,6 @@ const save = () => {
 
     <v-card>
       <v-card-title class="card-title">
-        <!-- icon added here -->
         <div class="title-wrap">
           <v-icon icon="mdi-clipboard-text-outline" />
           <h2>Create a new session</h2>
@@ -111,6 +66,50 @@ const save = () => {
     </v-card>
   </v-dialog>
 </template>
+
+<script setup>
+import { ref } from "vue";
+
+const emit = defineEmits(["save"]);
+
+const dialog = ref(false);
+
+const optionList = [
+  "Clarity of communication",
+  "Technical depth",
+  "Collaboration readiness",
+  "User impact",
+];
+
+const title = ref("");
+const selectedOptions = ref([]);
+const titleError = ref("");
+
+const reset = () => {
+  title.value = "";
+  selectedOptions.value = [];
+  titleError.value = "";
+};
+
+const close = () => {
+  dialog.value = false;
+  reset();
+};
+
+const save = () => {
+  if (!title.value.trim()) {
+    titleError.value = "Please enter a session title.";
+    return;
+  }
+
+  emit("save", {
+    title: title.value.trim(),
+    options: [...selectedOptions.value],
+  });
+
+  close();
+};
+</script>
 
 <style scoped>
 .card-title {

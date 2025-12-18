@@ -1,37 +1,41 @@
 <script setup>
-import { ref } from 'vue'
-import DummyBox from './components/DummyBox.vue'
-import FormList from './components/FormList.vue'
-import ThemeSwitcher from './components/ThemeSwitcher.vue'
-
-const forms = ref([])
-
-const addForm = ({ title, options }) => {
-  forms.value = [
-    {
-      id: crypto.randomUUID ? crypto.randomUUID() : Date.now(),
-      title,
-      options,
-      createdAt: new Date().toISOString()
-    },
-    ...forms.value
-  ]
-}
+import { RouterLink, RouterView } from "vue-router";
+import ThemeSwitcher from "./components/ThemeSwitcher.vue";
 </script>
 
 <template>
   <v-app>
     <v-app-bar elevation="0">
-      <v-app-bar-title class="brand">CodeCriteria</v-app-bar-title>
+      <v-app-bar-title>
+        <RouterLink class="brand" to="/">CodeCriteria</RouterLink>
+      </v-app-bar-title>
+
       <v-spacer />
-      <ThemeSwitcher />
+
+      <div class="app-bar__actions">
+        <v-btn
+          class="nav-link"
+          variant="text"
+          :to="{ name: 'home' }"
+        >
+          Forms
+        </v-btn>
+
+        <v-btn
+          class="nav-link"
+          color="primary"
+          variant="flat"
+          :to="{ name: 'login' }"
+        >
+          Login
+        </v-btn>
+
+        <ThemeSwitcher />
+      </div>
     </v-app-bar>
 
     <v-main class="app-main">
-      <div class="content">
-        <DummyBox @create-form="addForm" />
-        <FormList :forms="forms" />
-      </div>
+      <RouterView />
     </v-main>
   </v-app>
 </template>
@@ -40,18 +44,24 @@ const addForm = ({ title, options }) => {
 .brand {
   font-weight: 600;
   font-size: 1.1rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.app-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-link {
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
 }
 
 .app-main {
   background: rgb(var(--v-theme-background));
-}
-
-.content {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  min-height: calc(100vh - 64px);
 }
 </style>
