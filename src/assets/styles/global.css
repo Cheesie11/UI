@@ -1,19 +1,10 @@
 html, body {
-  height: 100%;
   margin: 0;
+  padding: 0;
+  background-color: rgb(var(--v-theme-background));
 }
 
-#app {
-  height: 100%;
-}
-
-/* Nice modern default font stack (no download needed) */
-:root {
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-}
-
-/* Optional: slightly nicer text rendering */
 body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: rgba(31, 12, 47, 0.9);
 }
