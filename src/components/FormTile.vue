@@ -1,71 +1,49 @@
-<script setup>
-import { computed } from 'vue'
-
-const props = defineProps({
-  form: {
-    type: Object,
-    required: true
-  }
-})
-
-const formattedDate = computed(() => {
-  if (!props.form?.createdAt) {
-    return ''
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium'
-  }).format(new Date(props.form.createdAt))
-})
-</script>
-
 <template>
-  <v-card
-    class="form-tile"
-    elevation="0"
-  >
+  <v-card class="form-tile" elevation="0">
     <div class="header">
       <div>
         <p class="title">
           {{ form.title }}
         </p>
-        <p
-          v-if="formattedDate"
-          class="meta"
-        >
+        <p v-if="formattedDate" class="meta">
           Session created {{ formattedDate }}
         </p>
       </div>
 
-      <v-btn
-        icon="mdi-dots-horizontal"
-        variant="text"
-        color="default"
-        aria-label="Session actions"
-      />
+      <v-btn icon="mdi-delete" variant="text" color="default"/>
     </div>
 
     <div class="options">
       <template v-if="form.options?.length">
-        <v-chip
-          v-for="option in form.options"
-          :key="option"
-          size="small"
-          color="primary"
-          variant="tonal"
-        >
+        <v-chip v-for="option in form.options" :key="option" size="small" color="primary" variant="tonal">
           {{ option }}
         </v-chip>
       </template>
-      <p
-        v-else
-        class="meta"
-      >
-        No criteria selected
-      </p>
+      <p v-else class="meta">No criteria selected</p>
     </div>
   </v-card>
 </template>
+
+<script setup>
+import { computed } from "vue";
+
+const props = defineProps({
+  form: {
+    type: Object,
+    required: true,
+  },
+});
+
+const formattedDate = computed(() => {
+  if (!props.form?.createdAt) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+  }).format(new Date(props.form.createdAt));
+});
+</script>
 
 <style scoped>
 .form-tile {

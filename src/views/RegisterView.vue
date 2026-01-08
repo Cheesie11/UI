@@ -7,43 +7,16 @@
       </header>
 
       <v-form ref="formRef" fast-fail @submit.prevent="handleSubmit">
-        <v-text-field
-          v-model="email"
-          label="Email"
-          type="email"
-          variant="outlined"
-          density="comfortable"
-          :rules="[rules.required, rules.email]"
-          autocomplete="email"
-        />
+        <v-text-field v-model="email" label="Email" type="email" variant="outlined" density="comfortable"
+          :rules="[rules.required, rules.email]" autocomplete="email" />
 
-        <v-text-field
-          v-model="password"
-          label="Password"
-          type="password"
-          variant="outlined"
-          density="comfortable"
-          :rules="[rules.required, rules.min]"
-          autocomplete="new-password"
-        />
+        <v-text-field v-model="password" label="Password" type="password" variant="outlined" density="comfortable"
+          :rules="[rules.required, rules.min]" autocomplete="new-password" />
 
-        <v-text-field
-          v-model="confirmPassword"
-          label="Confirm password"
-          type="password"
-          variant="outlined"
-          density="comfortable"
-          :rules="[rules.required, rules.match]"
-          autocomplete="new-password"
-        />
+        <v-text-field v-model="confirmPassword" label="Confirm password" type="password" variant="outlined"
+          density="comfortable" :rules="[rules.required, rules.match]" autocomplete="new-password" />
 
-        <v-btn
-          color="primary"
-          size="large"
-          type="submit"
-          block
-          :loading="loading"
-        >
+        <v-btn color="primary" size="large" type="submit" block :loading="loading">
           Create account
         </v-btn>
 

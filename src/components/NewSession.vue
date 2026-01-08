@@ -1,14 +1,3 @@
-<script setup>
-import { ref } from "vue";
-import CreateFormDialog from "./Dialog.vue";
-
-const emit = defineEmits(["create-form"]);
-
-const handleSave = (payload) => {
-  emit("create-form", payload);
-};
-</script>
-
 <template>
   <div class="wrapper">
     <v-card class="form-box" elevation="0">
@@ -21,6 +10,16 @@ const handleSave = (payload) => {
     </v-card>
   </div>
 </template>
+
+<script setup>
+import CreateFormDialog from "./Dialog.vue";
+
+const emit = defineEmits(["create-form"]);
+
+const handleSave = (payload) => {
+  emit("create-form", payload);
+};
+</script>
 
 <style scoped>
 .wrapper {

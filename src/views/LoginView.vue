@@ -7,36 +7,18 @@
       </header>
 
       <v-form ref="formRef" fast-fail @submit.prevent="handleSubmit">
-        <v-text-field
-          v-model="credentials.email"
-          label="Email"
-          type="email"
-          variant="outlined"
-          density="comfortable"
-          :rules="[rules.required, rules.email]"
-        />
+        <v-text-field v-model="credentials.email" label="Email" type="email" variant="outlined" density="comfortable"
+          :rules="[rules.required, rules.email]" />
 
-        <v-text-field
-          v-model="credentials.password"
-          label="Password"
-          type="password"
-          variant="outlined"
-          density="comfortable"
-          :rules="[rules.required, rules.min]"
-        />
+        <v-text-field v-model="credentials.password" label="Password" type="password" variant="outlined"
+          density="comfortable" :rules="[rules.required, rules.min]" />
 
         <div class="register-hint">
           <span>No account?</span>
           <RouterLink to="/register">Create one</RouterLink>
         </div>
 
-        <v-btn
-          color="primary"
-          size="large"
-          type="submit"
-          block
-          :loading="loading"
-        >
+        <v-btn color="primary" size="large" type="submit" block :loading="loading">
           Log in
         </v-btn>
       </v-form>

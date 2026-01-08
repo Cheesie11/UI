@@ -1,14 +1,8 @@
 <template>
   <v-dialog v-model="dialog" max-width="520">
     <template #activator="{ props }">
-      <v-btn
-        v-bind="props"
-        color="primary"
-        variant="flat"
-        icon="mdi-plus"
-        rounded="pill"
-        aria-label="Create new session"
-      />
+      <v-btn v-bind="props" color="primary" variant="flat" icon="mdi-plus" rounded="pill"
+        aria-label="Create new session" />
     </template>
 
     <v-card>
@@ -22,33 +16,16 @@
       </v-card-title>
 
       <v-card-text class="card-body">
-        <v-text-field
-          v-model="title"
-          label="Session title"
-          placeholder="Trial IPA"
-          :error="!!titleError"
-          :error-messages="titleError"
-          @update:model-value="titleError = ''"
-          autofocus
-          variant="outlined"
-        />
+        <v-text-field v-model="title" label="Session title" placeholder="Trial IPA" :error="!!titleError"
+          :error-messages="titleError" @update:model-value="titleError = ''" autofocus variant="outlined"
+          hide-details />
 
-        <v-select
-          v-model="selectedOptions"
-          :items="optionList"
-          label="Sections"
-          multiple
-          chips
-          closable-chips
-          variant="outlined"
-          menu-icon="mdi-chevron-down"
-        >
+        <v-select v-model="selectedOptions" :items="optionList" label="Sections" multiple chips closable-chips
+          variant="outlined" menu-icon="mdi-chevron-down" hide-details>
           <template #item="{ props, item }">
             <v-list-item v-bind="props">
               <template #prepend>
-                <v-checkbox-btn
-                  :model-value="selectedOptions.includes(item.value)"
-                />
+                <v-checkbox-btn :model-value="selectedOptions.includes(item.value)" />
               </template>
             </v-list-item>
           </template>
@@ -141,6 +118,6 @@ const save = () => {
   display: flex;
   gap: 15px;
   align-items: center;
-  padding-bottom: 1.5rem;
+  padding-bottom: 1rem;
 }
 </style>

@@ -1,32 +1,25 @@
-<script setup>
-import FormTile from './FormTile.vue'
-
-defineProps({
-  forms: {
-    type: Array,
-    default: () => []
-  }
-})
-</script>
-
 <template>
   <section class="form-list">
     <template v-if="forms.length">
-      <FormTile
-        v-for="form in forms"
-        :key="form.id"
-        :form="form"
-      />
+      <FormTile v-for="form in forms" :key="form.id" :form="form" />
     </template>
 
-    <p
-      v-else
-      class="empty-state"
-    >
+    <p v-else class="empty-state">
       No sessions yet - create one to get started
     </p>
   </section>
 </template>
+
+<script setup>
+import FormTile from "./FormTile.vue";
+
+defineProps({
+  forms: {
+    type: Array,
+    default: () => [],
+  },
+});
+</script>
 
 <style scoped>
 .form-list {
