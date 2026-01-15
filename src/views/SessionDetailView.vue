@@ -25,19 +25,29 @@
         <div class="criteria-header">
           <h3>{{ criteria.id }} - {{ criteria.title }}</h3>
         </div>
-        <p class="guiding-question"><strong>Guiding Question:</strong></p>
-        <p>{{ criteria.guidingQuestion }}</p>
         
         <div class="quality-levels">
-          <h4>Quality Levels (Gütestufe)</h4>
-          <div v-for="quality in criteria.qualityLevels" :key="quality.level" class="quality-item">
-            <h5>Gütestufe {{ quality.level }}</h5>
-            <p>{{ quality.description }}</p>
-            <ul>
-              <li v-for="(req, i) in quality.requirements" :key="i">{{ req }}</li>
-            </ul>
+          <h4>Requirements erfüllen</h4>
+          <div class="requirements-list">
+            <div v-for="(req, i) in getGueterstufe3Requirements(criteria)" :key="i" class="requirement-item">
+              <v-checkbox
+                :model-value="isRequirementFulfilled(criteria, 3, i)"
+                @update:model-value="toggleRequirement(criteria, 3, i)"
+                :label="req"
+                density="compact"
+              />
+            </div>
           </div>
         </div>
+
+        <div class="criteria-score">
+          <strong>Erreichte Gütestufe:</strong> 
+          <span class="score-badge">{{ calculateCriteriaScore(criteria) }}</span>
+        </div>
+      </div>
+
+      <div v-if="session.criteria.length > 0" class="overall-score">
+        <h3>Durchschnittliche Punktzahl: <span class="score-value">{{ calculateOverallScore().toFixed(2) }}</span></h3>
       </div>
     </div>
 
@@ -61,32 +71,20 @@
               :rules="[rules.required]"
               class="mb-4"
             />
-            <v-textarea
-              v-model="newCriteria.guidingQuestion"
-              label="Guiding Question"
-              variant="outlined"
-              class="mb-4"
-            />
             
             <!-- Quality Levels -->
             <div class="quality-section">
-              <h4>Quality Levels (Gütestufe)</h4>
-              <div v-for="level in [0, 1, 2, 3]" :key="level" class="quality-input">
-                <h5>Gütestufe {{ level }}</h5>
-                <v-text-field 
-                  v-model="qualityLevels[level].description"
-                  :label="`Description for Gütestufe ${level}`"
-                  variant="outlined"
-                  class="mb-2"
-                />
-                <v-text-field 
-                  v-model="qualityLevels[level].requirementsText"
-                  :label="`Requirements for Gütestufe ${level} (comma separated)`"
-                  variant="outlined"
-                  hint="Enter requirements separated by commas"
-                  class="mb-3"
-                />
-              </div>
+              <h4>Requirements für Gütestufe 3</h4>
+              <p class="quality-hint">Geben Sie die einzelnen Anforderungen ein (eine pro Zeile)</p>
+              <v-textarea
+                v-model="newCriteria.requirementsText"
+                label="Requirements (eine pro Zeile)"
+                variant="outlined"
+                rows="6"
+                hint="Beispiel: 1. Die verwendeten Informationen...\n2. Es werden geeignete Visualisierungsmethoden..."
+                class="mb-4"
+              />
+              <p class="quality-note">Gütestufe 2, 1 und 0 werden automatisch basierend auf erfüllten Requirements berechnet.</p>
             </div>
           </v-form>
         </v-card-text>
@@ -109,7 +107,7 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getSession, addCriteriaToSession } from '../api/sessions';
+import { getSession, addCriteriaToSession, updateSession } from '../api/sessions';
 
 const route = useRoute();
 const router = useRouter();
@@ -123,18 +121,79 @@ const criteriaFormRef = ref(null);
 const newCriteria = ref({
   id: '',
   title: '',
-  guidingQuestion: '',
-});
-
-const qualityLevels = reactive({
-  3: { description: '', requirementsText: '' },
-  2: { description: '', requirementsText: '' },
-  1: { description: '', requirementsText: '' },
-  0: { description: '', requirementsText: '' },
+  requirementsText: '',
 });
 
 const rules = {
   required: (v) => !!v || 'Required',
+};
+
+const sortedQualityLevels = (levels) => {
+  if (!levels) return [];
+  return [...levels].sort((a, b) => b.level - a.level);
+};
+
+const getGueterstufe3Requirements = (criteria) => {
+  if (!criteria.qualityLevels) return [];
+  const stufe3 = criteria.qualityLevels.find(q => q.level === 3);
+  return stufe3 ? stufe3.requirements : [];
+};
+
+const isRequirementFulfilled = (criteria, level, requirementIndex) => {
+  if (!criteria.fulfilledRequirements) {
+    criteria.fulfilledRequirements = {};
+  }
+  const key = `${level}-${requirementIndex}`;
+  return criteria.fulfilledRequirements[key] || false;
+};
+
+const toggleRequirement = async (criteria, level, requirementIndex) => {
+  if (!criteria.fulfilledRequirements) {
+    criteria.fulfilledRequirements = {};
+  }
+  const key = `${level}-${requirementIndex}`;
+  criteria.fulfilledRequirements[key] = !criteria.fulfilledRequirements[key];
+  
+  // Save to backend
+  try {
+    await updateSession(route.params.id, {
+      userId: JSON.parse(localStorage.getItem('currentUser'))?.id,
+      title: session.value.title,
+      description: session.value.description,
+      criteria: session.value.criteria,
+    });
+  } catch (error) {
+    console.error('Error updating session:', error);
+  }
+};
+
+const calculateCriteriaScore = (criteria) => {
+  if (!criteria.qualityLevels || criteria.qualityLevels.length === 0) return 0;
+  
+  // Get Gütestufe 3 requirements count
+  const stufe3 = criteria.qualityLevels.find(q => q.level === 3);
+  if (!stufe3 || !stufe3.requirements) return 0;
+  
+  const totalRequirements = stufe3.requirements.length;
+  const fulfilledCount = stufe3.requirements.filter((_, i) => 
+    isRequirementFulfilled(criteria, 3, i)
+  ).length;
+  
+  // Calculate which level is achieved
+  if (fulfilledCount === totalRequirements) return 3;
+  if (fulfilledCount >= Math.ceil(totalRequirements * 0.75)) return 2;
+  if (fulfilledCount >= Math.ceil(totalRequirements * 0.5)) return 1;
+  return 0;
+};
+
+const calculateOverallScore = () => {
+  if (!session.value.criteria || session.value.criteria.length === 0) return 0;
+  
+  const totalScore = session.value.criteria.reduce((sum, criteria) => {
+    return sum + calculateCriteriaScore(criteria);
+  }, 0);
+  
+  return totalScore / session.value.criteria.length;
 };
 
 onMounted(() => {
@@ -159,21 +218,40 @@ const addNewCriteria = async () => {
 
   loading.value = true;
   try {
-    // Build quality levels array
-    const builtQualityLevels = Object.keys(qualityLevels).map(level => ({
-      level: parseInt(level),
-      description: qualityLevels[level].description,
-      requirements: qualityLevels[level].requirementsText
-        .split(',')
-        .map(r => r.trim())
-        .filter(r => r.length > 0),
-    }));
+    // Parse requirements from textarea (one per line)
+    const requirements = newCriteria.value.requirementsText
+      .split('\n')
+      .map(r => r.trim())
+      .filter(r => r.length > 0);
+
+    // Generate all quality levels automatically
+    const qualityLevels = [
+      {
+        level: 3,
+        description: `Alle ${requirements.length} Punkte sind erfüllt.`,
+        requirements: requirements,
+      },
+      {
+        level: 2,
+        description: `${Math.ceil(requirements.length * 0.75)} Punkte sind erfüllt.`,
+        requirements: [`${Math.ceil(requirements.length * 0.75)} der ${requirements.length} Anforderungen sind erfüllt.`],
+      },
+      {
+        level: 1,
+        description: `${Math.ceil(requirements.length * 0.5)} Punkte sind erfüllt.`,
+        requirements: [`${Math.ceil(requirements.length * 0.5)} der ${requirements.length} Anforderungen sind erfüllt.`],
+      },
+      {
+        level: 0,
+        description: `Weniger als ${Math.ceil(requirements.length * 0.5)} Punkte sind erfüllt.`,
+        requirements: [`Weniger als ${Math.ceil(requirements.length * 0.5)} der ${requirements.length} Anforderungen sind erfüllt.`],
+      },
+    ];
 
     const criteriaData = {
       id: newCriteria.value.id,
       title: newCriteria.value.title,
-      guidingQuestion: newCriteria.value.guidingQuestion,
-      qualityLevels: builtQualityLevels,
+      qualityLevels: qualityLevels,
     };
 
     const response = await addCriteriaToSession(route.params.id, criteriaData);
@@ -182,10 +260,7 @@ const addNewCriteria = async () => {
     showAddCriteriaDialog.value = false;
     
     // Reset form
-    newCriteria.value = { id: '', title: '', guidingQuestion: '' };
-    Object.keys(qualityLevels).forEach(level => {
-      qualityLevels[level] = { description: '', requirementsText: '' };
-    });
+    newCriteria.value = { id: '', title: '', requirementsText: '' };
   } catch (error) {
     banner.value = error.response?.data || 'Failed to add criteria';
     bannerType.value = 'error';
@@ -290,19 +365,74 @@ const addNewCriteria = async () => {
   color: rgb(var(--v-theme-primary));
 }
 
-.quality-item ul {
-  margin: 0.5rem 0 0 1.5rem;
+.requirements-list {
+  margin: 0.5rem 0 0 0;
   padding: 0;
 }
 
-.quality-item li {
+.requirement-item {
   margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.criteria-score {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: rgba(var(--v-theme-secondary), 0.1);
+  border-left: 4px solid rgb(var(--v-theme-secondary));
+  border-radius: 4px;
+}
+
+.score-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: bold;
+  margin-left: 0.5rem;
+}
+
+.overall-score {
+  margin-top: 3rem;
+  padding: 2rem;
+  background-color: rgba(var(--v-theme-primary), 0.1);
+  border: 2px solid rgb(var(--v-theme-primary));
+  border-radius: 8px;
+  text-align: center;
+}
+
+.overall-score h3 {
+  margin: 0;
+}
+
+.score-value {
+  color: rgb(var(--v-theme-primary));
+  font-weight: 700;
+  font-size: 1.5rem;
 }
 
 .quality-section {
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid rgba(var(--v-theme-primary), 0.2);
+}
+
+.quality-hint {
+  font-size: 0.9rem;
+  color: rgba(var(--v-theme-on-surface), 0.6);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.quality-note {
+  font-size: 0.85rem;
+  color: rgba(var(--v-theme-secondary), 0.8);
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(var(--v-theme-secondary), 0.1);
+  border-left: 3px solid rgb(var(--v-theme-secondary));
+  border-radius: 4px;
 }
 
 .quality-input {
