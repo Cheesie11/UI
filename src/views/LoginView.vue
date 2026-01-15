@@ -7,11 +7,11 @@
       </header>
 
       <v-form ref="formRef" fast-fail @submit.prevent="handleSubmit">
-        <v-text-field v-model="credentials.email" label="Email" type="email" variant="outlined" density="comfortable"
-          :rules="[rules.required, rules.email]" />
+        <v-text-field v-model="credentials.firstname" label="First Name" variant="outlined" density="comfortable"
+          :rules="[rules.required]" />
 
-        <v-text-field v-model="credentials.password" label="Password" type="password" variant="outlined"
-          density="comfortable" :rules="[rules.required, rules.min]" />
+        <v-text-field v-model="credentials.lastname" label="Last Name" variant="outlined"
+          density="comfortable" :rules="[rules.required]" />
 
         <div class="register-hint">
           <span>No account?</span>
@@ -32,22 +32,20 @@
 
 <script setup>
 import { reactive, ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
+import { login } from "../api/auth";
 
+const router = useRouter();
 const formRef = ref(null);
 const loading = ref(false);
 const banner = ref("");
 const credentials = reactive({
-  email: "",
-  password: "",
+  firstname: "",
+  lastname: "",
 });
 
 const rules = {
   required: (value) => !!value || "Required",
-  email: (value) =>
-    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-    "Enter a valid email",
-  min: (value) => (value?.length ?? 0) >= 8 || "Use at least 8 characters",
 };
 
 const handleSubmit = async () => {
@@ -56,11 +54,15 @@ const handleSubmit = async () => {
   if (!valid) return;
 
   loading.value = true;
-  banner.value = "";
-  setTimeout(() => {
+  
+  try {
+    await login(credentials.firstname, credentials.lastname);
+    banner.value = "Login successful!";
+    router.push("/");
+  } catch (error) {
+    banner.value = "Login failed";
     loading.value = false;
-    banner.value = "Demo login complete. Wire this up to your API next.";
-  }, 900);
+  }
 };
 </script>
 

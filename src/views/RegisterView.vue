@@ -7,14 +7,11 @@
       </header>
 
       <v-form ref="formRef" fast-fail @submit.prevent="handleSubmit">
-        <v-text-field v-model="email" label="Email" type="email" variant="outlined" density="comfortable"
-          :rules="[rules.required, rules.email]" autocomplete="email" />
+        <v-text-field v-model="firstname" label="First Name" variant="outlined" density="comfortable"
+          :rules="[rules.required]" />
 
-        <v-text-field v-model="password" label="Password" type="password" variant="outlined" density="comfortable"
-          :rules="[rules.required, rules.min]" autocomplete="new-password" />
-
-        <v-text-field v-model="confirmPassword" label="Confirm password" type="password" variant="outlined"
-          density="comfortable" :rules="[rules.required, rules.match]" autocomplete="new-password" />
+        <v-text-field v-model="lastname" label="Last Name" variant="outlined" density="comfortable"
+          :rules="[rules.required]" />
 
         <v-btn color="primary" size="large" type="submit" block :loading="loading">
           Create account
@@ -35,23 +32,19 @@
 
 <script setup>
 import { ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
+import { register } from "../api/auth";
 
+const router = useRouter();
 const formRef = ref(null);
 const loading = ref(false);
 const banner = ref("");
 
-const email = ref("");
-const password = ref("");
-const confirmPassword = ref("");
+const firstname = ref("");
+const lastname = ref("");
 
 const rules = {
   required: (v) => !!v || "Required",
-  email: (v) =>
-    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-    "Enter a valid email",
-  min: (v) => (v?.length ?? 0) >= 8 || "Use at least 8 characters",
-  match: (v) => v === password.value || "Passwords do not match",
 };
 
 const handleSubmit = async () => {
@@ -61,12 +54,17 @@ const handleSubmit = async () => {
   if (!valid) return;
 
   loading.value = true;
-  banner.value = "";
-
-  setTimeout(() => {
+  
+  try {
+    await register(firstname.value, lastname.value);
+    banner.value = "Account created successfully!";
+    setTimeout(() => {
+      router.push("/login");
+    }, 1000);
+  } catch (error) {
+    banner.value = "Registration failed";
     loading.value = false;
-    banner.value = "Account created (demo). Hook this up to your API next.";
-  }, 900);
+  }
 };
 </script>
 

@@ -16,7 +16,7 @@
       </v-card-title>
 
       <v-card-text class="card-body">
-        <v-text-field v-model="title" label="Session title" placeholder="Trial IPA" :error="!!titleError"
+        <v-text-field v-model="title" label="Session title" :error="!!titleError"
           :error-messages="titleError" @update:model-value="titleError = ''" autofocus variant="outlined"
           hide-details />
 
