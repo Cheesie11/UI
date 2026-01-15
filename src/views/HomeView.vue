@@ -22,16 +22,6 @@
         + New Session
       </v-btn>
     </div>
-
-    <div v-if="currentUser" class="user-info">
-      <v-card>
-        <v-card-title>Your Profile</v-card-title>
-        <v-card-text>
-          <p><strong>Name:</strong> {{ currentUser.firstname }} {{ currentUser.lastname }}</p>
-          <v-btn color="error" @click="logout" class="mt-4">Logout</v-btn>
-        </v-card-text>
-      </v-card>
-    </div>
   </div>
 </template>
 
@@ -40,22 +30,13 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const currentUser = ref(null);
 
 onMounted(() => {
   const userData = localStorage.getItem('currentUser');
-  if (userData) {
-    currentUser.value = JSON.parse(userData);
-  } else {
+  if (!userData) {
     router.push('/login');
   }
 });
-
-const logout = () => {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('currentUser');
-  router.push('/login');
-};
 </script>
 
 <style scoped>
@@ -71,7 +52,6 @@ const logout = () => {
 .home-header {
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.1), rgba(var(--v-theme-secondary), 0.1));
   border-radius: 12px;
 }
 
@@ -79,12 +59,19 @@ const logout = () => {
   margin: 0 0 1rem 0;
   font-size: 2.5rem;
   font-weight: 700;
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .home-header p {
   margin: 0;
   font-size: 1.1rem;
-  color: rgba(var(--v-theme-on-surface), 0.7);
+  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.8), rgba(var(--v-theme-secondary), 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .home-actions {

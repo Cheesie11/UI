@@ -1,6 +1,31 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
+import { RouterLink, RouterView, useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
 import ThemeSwitcher from "./components/ThemeSwitcher.vue";
+
+const router = useRouter();
+const currentUser = ref(null);
+
+onMounted(() => {
+  checkAuth();
+});
+
+const checkAuth = () => {
+  const userData = localStorage.getItem('currentUser');
+  currentUser.value = userData ? JSON.parse(userData) : null;
+};
+
+const logout = () => {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('currentUser');
+  currentUser.value = null;
+  router.push('/login');
+};
+
+// Watch for route changes to update auth status
+router.afterEach(() => {
+  checkAuth();
+});
 </script>
 
 <template>
@@ -14,21 +39,36 @@ import ThemeSwitcher from "./components/ThemeSwitcher.vue";
 
       <div class="app-bar__actions">
         <v-btn
+          v-if="currentUser"
           class="nav-link"
           variant="text"
           :to="{ name: 'home' }"
         >
-          Forms
+          Sessions
         </v-btn>
 
-        <v-btn
-          class="nav-link"
-          color="primary"
-          variant="flat"
-          :to="{ name: 'login' }"
-        >
-          Login
-        </v-btn>
+        <template v-if="!currentUser">
+          <v-btn
+            class="nav-link"
+            color="primary"
+            variant="flat"
+            :to="{ name: 'login' }"
+          >
+            Login
+          </v-btn>
+        </template>
+
+        <template v-else>
+          <span class="user-greeting">{{ currentUser.firstname }} {{ currentUser.lastname }}</span>
+          <v-btn
+            class="nav-link"
+            color="error"
+            variant="flat"
+            @click="logout"
+          >
+            Logout
+          </v-btn>
+        </template>
 
         <ThemeSwitcher />
       </div>
@@ -58,6 +98,12 @@ import ThemeSwitcher from "./components/ThemeSwitcher.vue";
   text-transform: none;
   letter-spacing: normal;
   font-weight: 600;
+}
+
+.user-greeting {
+  font-size: 0.9rem;
+  color: rgba(var(--v-theme-on-background), 0.7);
+  margin-right: 0.5rem;
 }
 
 .app-main {
