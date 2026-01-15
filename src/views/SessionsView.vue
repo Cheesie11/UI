@@ -97,10 +97,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { getUserSessions, createSession, deleteSession } from '../api/sessions';
 
 const router = useRouter();
+const route = useRoute();
 const sessions = ref([]);
 const showNewSessionDialog = ref(false);
 const showDeleteDialog = ref(false);
@@ -121,6 +122,10 @@ const rules = {
 
 onMounted(() => {
   loadSessions();
+  // Check if we should open the new session dialog
+  if (route.query.new === 'true') {
+    showNewSessionDialog.value = true;
+  }
 });
 
 const loadSessions = async () => {

@@ -17,7 +17,7 @@
         color="secondary" 
         variant="outlined"
         size="large"
-        to="/sessions"
+        to="/sessions?new=true"
       >
         + New Session
       </v-btn>
