@@ -54,15 +54,16 @@ const handleSubmit = async () => {
   if (!valid) return;
 
   loading.value = true;
+  banner.value = "";
   
   try {
     await register(firstname.value, lastname.value);
-    banner.value = "Account created successfully!";
+    banner.value = "Account created successfully! Redirecting to login...";
     setTimeout(() => {
       router.push("/login");
-    }, 1000);
+    }, 1500);
   } catch (error) {
-    banner.value = "Registration failed";
+    banner.value = error.response?.data?.message || "Registration failed. Please try again.";
     loading.value = false;
   }
 };
