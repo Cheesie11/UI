@@ -58,12 +58,9 @@ const handleSubmit = async () => {
   
   try {
     const response = await login(credentials.firstname, credentials.lastname);
-    // Store authentication token if provided
-    if (response.data?.token) {
-      localStorage.setItem("authToken", response.data.token);
-    }
-    if (response.data?.user) {
-      localStorage.setItem("currentUser", JSON.stringify(response.data.user));
+    // Store user data from response
+    if (response.data) {
+      localStorage.setItem("currentUser", JSON.stringify(response.data));
     }
     banner.value = "Login successful! Redirecting...";
     // Redirect after brief delay to show success message
@@ -71,7 +68,7 @@ const handleSubmit = async () => {
       router.push("/");
     }, 500);
   } catch (error) {
-    banner.value = error.response?.data?.message || "Login failed. Please try again.";
+    banner.value = error.response?.data || "Login failed. Please try again.";
     loading.value = false;
   }
 };

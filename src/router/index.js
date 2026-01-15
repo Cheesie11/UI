@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
+import SessionsView from "../views/SessionsView.vue";
+import SessionDetailView from "../views/SessionDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,9 +18,20 @@ const router = createRouter({
       name: "login",
       component: LoginView,
     },
-    { path: "/register", 
+    { 
+      path: "/register", 
       name: "register", 
       component: RegisterView 
+    },
+    {
+      path: "/sessions",
+      name: "sessions",
+      component: SessionsView,
+    },
+    {
+      path: "/sessions/:id",
+      name: "session-detail",
+      component: SessionDetailView,
     },
   ],
   scrollBehavior: () => ({ top: 0 }),
