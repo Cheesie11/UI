@@ -1,0 +1,42 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths: 
+      - 'UI/**'
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'UI/**'
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: 'UI/package-lock.json'
+      
+      - name: Install dependencies
+        run: cd UI && npm install
+      
+      - name: Run unit tests
+        run: cd UI && npm run test:unit
+      
+      - name: Run E2E tests
+        run: cd UI && npm run test:e2e
+      
+      - name: Build project
+        run: cd UI && npm run build
+      
+      - name: ✅ Pipeline successful
+        run: echo "All checks passed!"
