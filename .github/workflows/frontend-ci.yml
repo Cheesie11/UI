@@ -3,13 +3,9 @@ name: Frontend CI
 on:
   push:
     branches: [ main, develop ]
-    paths: 
-      - 'UI/**'
-      - '.github/workflows/frontend-ci.yml'
   pull_request:
     branches: [ main, develop ]
-    paths:
-      - 'UI/**'
+  workflow_dispatch:
 
 jobs:
   test-and-build:
