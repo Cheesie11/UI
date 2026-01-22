@@ -18,6 +18,17 @@ dist-ssr
 .idea
 .DS_Store
 *.suo
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Cypress
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+
 *.ntvs*
 *.njsproj
 *.sln

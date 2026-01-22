@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "cypress run",
+    "test:e2e:open": "cypress open",
+    "test:unit": "vitest",
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -17,7 +21,12 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/test-utils": "^2.4.1",
+    "@vitest/coverage-v8": "^1.0.4",
+    "cypress": "^13.6.2",
+    "jsdom": "^23.0.1",
     "vite": "^7.2.4",
-    "vite-plugin-vuetify": "^2.1.2"
+    "vite-plugin-vuetify": "^2.1.2",
+    "vitest": "^1.0.4"
   }
 }
